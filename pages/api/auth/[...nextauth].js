@@ -22,7 +22,12 @@ export const googleAuthOptions = {
   secret: process.env.GOOGLE_CLIENT_SECRET,
   // 콜백 셋팅
   callbacks: {
-    async jwt({ token, account }) {
+    // 앨범 정보 추가하기
+    async jwt({ token, trigger, account, session }) {
+      // useSession으로 update 를사용시 앨범 데이터 들어가있는지 확인후 업데이트
+      if (trigger === "update" && session?.albumId) {
+        token.albumId = session.albumId;
+      }
       // Persist the OAuth access_token to the token right after signin
       if (account) {
         token.accessToken = account.access_token;
@@ -31,6 +36,10 @@ export const googleAuthOptions = {
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
+      session.accessToken = token.accessToken;
+      if (token.albumId) {
+        session.albumId = token.albumId;
+      }
       session.accessToken = token.accessToken;
       return session;
     },

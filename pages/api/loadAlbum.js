@@ -1,5 +1,3 @@
-import { getSession } from "next-auth/react";
-
 // Custom error that contains a status, title and a server message.
 class StatusError extends Error {
   constructor(status, title, serverMessage, ...params) {
